@@ -3,8 +3,6 @@ package demo;
 import equator.EqualsAnnotation;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class ExampleEntityOne {
 
