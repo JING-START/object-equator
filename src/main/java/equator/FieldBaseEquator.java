@@ -208,6 +208,9 @@ public class FieldBaseEquator extends AbstractEquator {
                         if (field.isAnnotationPresent(EqualsAnnotation.class)) {
                             //属性中文别名
                             String value = equalsAnnotation.value();
+                            if ("".equals(value) || value == null) {
+                                value = field.getName();
+                            }
                             //属性描述
                             String describe = equalsAnnotation.describe();
                             //属性名称
