@@ -92,8 +92,8 @@ src
 
 ### 作者
 
-912176434@qq.com
-zhoujingtong123@foxmail.com
+* 912176434@qq.com
+* zhoujingtong123@foxmail.com
 
 *您也可以在贡献者名单中参看所有参与该项目的开发者。*
 
