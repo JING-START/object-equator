@@ -68,7 +68,9 @@ public class MainTest {
         List<FieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
         differentFields.forEach(System.out::println);
         //输出
-        //{Boolean中文名称:false},{属性描述:Boolean属性描述}
-        //{String中文名称:7},{属性描述:String属性描述}
+        //{Byte中文名称1:50},{属性描述:Byte属性描述}
+        //{Boolean中文名称1:false},{属性描述:Boolean属性描述}
+        //{String中文名称1:7},{属性描述:String属性描述}
+        //{Boolean中文名称2:true},{属性描述:Boolean属性描述}
     }
 }

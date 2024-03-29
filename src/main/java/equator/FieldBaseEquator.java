@@ -54,8 +54,8 @@ public class FieldBaseEquator extends AbstractEquator {
             boolean isLong = firstInfoList.size() <= secondInfoList.size();
 
             for (int i = 0; i < bigSize; i++) {
-                SimpleFieldInfo var1 = null;
-                SimpleFieldInfo var2 = null;
+                SimpleFieldInfo simple1 = null;
+                SimpleFieldInfo simple2 = null;
                 boolean isEnd = true;
                 //second长
                 if (isLong) {
@@ -66,19 +66,18 @@ public class FieldBaseEquator extends AbstractEquator {
                             //字段相同的
                             if (secondInfoList.get(i).getFieldName().equals(next.getFieldName()) &&
                                     secondInfoList.get(i).getFieldNote().equals(next.getFieldNote())) {
-                                var1 = next;
-                                var2 = secondInfoList.get(i);
-                                FieldInfo var3 = new FieldInfo();
-                                var3.setFieldName(var1.getFieldName());
-                                var3.setFirstFieldType(var1.getFieldType());
-                                var3.setFirstVal(var1.getFieldVal());
+                                simple1 = next;
+                                simple2 = secondInfoList.get(i);
+                                FieldInfo f1 = new FieldInfo(
+                                        simple1.getFieldName(),
+                                        simple1.getFieldType(),
+                                        simple1.getFieldVal(),
 
-                                var3.setSecondFieldType(var2.getFieldType());
-                                var3.setSecondVal(var2.getFieldVal());
-
-                                var3.setFieldNote(var1.getFieldNote());
-                                var3.setFieldDescribe(var1.getFieldDescribe());
-                                val.add(var3);
+                                        simple2.getFieldType(),
+                                        simple2.getFieldVal(),
+                                        simple1.getFieldNote(),
+                                        simple1.getFieldDescribe());
+                                val.add(f1);
                                 isEnd = false;
                                 //短的匹配上了，就踢出这个短的
                                 iterator.remove();
@@ -88,18 +87,17 @@ public class FieldBaseEquator extends AbstractEquator {
                     //短的全部遍历结束也没有匹配上，说明 长的那个是多出来的
                     if (isEnd) {
                         //第二个长，第二个多出来，val1 就设为空
-                        var2 = secondInfoList.get(i);
-                        FieldInfo var3 = new FieldInfo();
-                        var3.setFieldName(var2.getFieldName());
-                        var3.setFirstFieldType(var2.getFieldType());
-                        var3.setFirstVal(null);
+                        simple2 = secondInfoList.get(i);
+                        FieldInfo f1 = new FieldInfo(
+                                simple2.getFieldName(),
+                                simple2.getFieldType(),
+                                null,
 
-                        var3.setSecondFieldType(var2.getFieldType());
-                        var3.setSecondVal(var2.getFieldVal());
-
-                        var3.setFieldNote(var2.getFieldNote());
-                        var3.setFieldDescribe(var2.getFieldDescribe());
-                        val.add(var3);
+                                simple2.getFieldType(),
+                                simple2.getFieldVal(),
+                                simple2.getFieldNote(),
+                                simple2.getFieldDescribe());
+                        val.add(f1);
                     }
                     //first长
                 } else {
@@ -110,17 +108,17 @@ public class FieldBaseEquator extends AbstractEquator {
                             //字段相同的，second短
                             if (next.getFieldName().equals(firstInfoList.get(i).getFieldName()) &&
                                     next.getFieldNote().equals(firstInfoList.get(i).getFieldNote())) {
-                                var1 = firstInfoList.get(i);
-                                var2 = next;
-                                FieldInfo var3 = new FieldInfo();
-                                var3.setFieldName(var1.getFieldName());
-                                var3.setFirstFieldType(var1.getFieldType());
-                                var3.setFirstVal(var1.getFieldVal());
-                                var3.setSecondFieldType(var2.getFieldType());
-                                var3.setSecondVal(var2.getFieldVal());
-                                var3.setFieldNote(var1.getFieldNote());
-                                var3.setFieldDescribe(var1.getFieldDescribe());
-                                val.add(var3);
+                                simple1 = firstInfoList.get(i);
+                                simple2 = next;
+                                FieldInfo f1 = new FieldInfo();
+                                f1.setFieldName(simple1.getFieldName());
+                                f1.setFirstFieldType(simple1.getFieldType());
+                                f1.setFirstVal(simple1.getFieldVal());
+                                f1.setSecondFieldType(simple2.getFieldType());
+                                f1.setSecondVal(simple2.getFieldVal());
+                                f1.setFieldNote(simple1.getFieldNote());
+                                f1.setFieldDescribe(simple1.getFieldDescribe());
+                                val.add(f1);
                                 isEnd = false;
                                 iterator.remove();
                             }
@@ -129,16 +127,16 @@ public class FieldBaseEquator extends AbstractEquator {
                     //短的全部遍历结束也没有匹配上，说明 长的那个是多出来的
                     if (isEnd) {
                         //第一个长，第一个就是多出来，val2 就设为空
-                        var1 = firstInfoList.get(i);
-                        FieldInfo var3 = new FieldInfo();
-                        var3.setFieldName(var1.getFieldName());
-                        var3.setFirstFieldType(var1.getFieldType());
-                        var3.setFirstVal(var1.getFieldVal());
-                        var3.setSecondFieldType(var1.getFieldType());
-                        var3.setSecondVal(null);
-                        var3.setFieldNote(var1.getFieldNote());
-                        var3.setFieldDescribe(var1.getFieldDescribe());
-                        val.add(var3);
+                        simple1 = firstInfoList.get(i);
+                        FieldInfo f1 = new FieldInfo();
+                        f1.setFieldName(simple1.getFieldName());
+                        f1.setFirstFieldType(simple1.getFieldType());
+                        f1.setFirstVal(simple1.getFieldVal());
+                        f1.setSecondFieldType(simple1.getFieldType());
+                        f1.setSecondVal(null);
+                        f1.setFieldNote(simple1.getFieldNote());
+                        f1.setFieldDescribe(simple1.getFieldDescribe());
+                        val.add(f1);
                     }
                 }
             }
@@ -148,19 +146,19 @@ public class FieldBaseEquator extends AbstractEquator {
             if (isLong) {
                 //第一个短的里面的值不在长 的里面
                 //短的值存在，就说明不在长的里面
-                if (firstInfoList.size() > 0) {
+                if (!firstInfoList.isEmpty()) {
                     firstInfoList.forEach(fir -> {
                         //第一个长，第一个就是多出来，val2 就设为空
                         SimpleFieldInfo var1 = fir;
-                        FieldInfo var3 = new FieldInfo();
-                        var3.setFieldName(var1.getFieldName());
-                        var3.setFirstFieldType(var1.getFieldType());
-                        var3.setFirstVal(var1.getFieldVal());
-                        var3.setSecondFieldType(var1.getFieldType());
-                        var3.setSecondVal(null);
-                        var3.setFieldNote(var1.getFieldNote());
-                        var3.setFieldDescribe(var1.getFieldDescribe());
-                        val.add(var3);
+                        FieldInfo f1 = new FieldInfo();
+                        f1.setFieldName(var1.getFieldName());
+                        f1.setFirstFieldType(var1.getFieldType());
+                        f1.setFirstVal(var1.getFieldVal());
+                        f1.setSecondFieldType(var1.getFieldType());
+                        f1.setSecondVal(null);
+                        f1.setFieldNote(var1.getFieldNote());
+                        f1.setFieldDescribe(var1.getFieldDescribe());
+                        val.add(f1);
                     });
                 }
                 //第一个长
@@ -168,16 +166,15 @@ public class FieldBaseEquator extends AbstractEquator {
                 //第二个短   短里面的值不在长的里面
                 if (!secondInfoList.isEmpty()) {
                     secondInfoList.forEach(sec -> {
-                        SimpleFieldInfo var2 = sec;
-                        FieldInfo var3 = new FieldInfo();
-                        var3.setFieldName(var2.getFieldName());
-                        var3.setFirstFieldType(var2.getFieldType());
-                        var3.setFirstVal(null);
-                        var3.setSecondFieldType(var2.getFieldType());
-                        var3.setSecondVal(var2.getFieldVal());
-                        var3.setFieldNote(var2.getFieldNote());
-                        var3.setFieldDescribe(var2.getFieldDescribe());
-                        val.add(var3);
+                        FieldInfo f1 = new FieldInfo();
+                        f1.setFieldName(sec.getFieldName());
+                        f1.setFirstFieldType(sec.getFieldType());
+                        f1.setFirstVal(null);
+                        f1.setSecondFieldType(sec.getFieldType());
+                        f1.setSecondVal(sec.getFieldVal());
+                        f1.setFieldNote(sec.getFieldNote());
+                        f1.setFieldDescribe(sec.getFieldDescribe());
+                        val.add(f1);
                     });
                 }
             }

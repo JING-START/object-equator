@@ -23,10 +23,7 @@ public class EquatorUtil {
      * @return new diff fields
      */
     public static List<FieldInfo> getDifferentFields(Object first, Object second) {
-        if (first.getClass() != second.getClass()) {
-            log.warn("比较对象类型不一致");
-            return Collections.emptyList();
-        } else if (first == second || Objects.equals(first, second)) {
+        if (first == second || Objects.equals(first, second)) {
             return Collections.emptyList();
         }
         return fieldBaseEquator.getDifferentFields(first, second);

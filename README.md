@@ -2,8 +2,8 @@
 
 对象属性比较器，旧对象和新对象比较，获取新对象被修改的属性
 
-* 目前支持对象基础类型比较，包括String,对象嵌套也支持
-* 暂不支持集合类型，Collections,Map
+* 目前支持对象属性基础类型比较，包括String,支持对象嵌套
+* 暂不支持集合属性类型，Collections,Map
 
 
 
@@ -20,6 +20,7 @@
 ## 目录
 
 - [上手指南](#上手指南)
+    - [技术架构](#技术架构)
     - [开发前的配置要求](#开发前的配置要求)
     - [安装步骤](#安装步骤)
 - [文件目录说明](#文件目录说明)
@@ -29,6 +30,10 @@
 - [鸣谢](#鸣谢)
 
 ### 上手指南
+
+###### 技术架构
+
+使用java反射机制获取比较对象属性
 
 ###### 开发前的配置要求
 
@@ -70,21 +75,67 @@ src
 * 被比较对象需要添加注解如：
   ``@EqualsAnnotation(value = "Byte中文名称1", describe = "Byte属性描述")``
 
-* 调用工具类方法，传入比较对象example1,example2，返回example2被修改的属性值
-
+* 调用工具类方法，传入比较对象example1,example2，返回example2被修改的属性值,具体可以运行测试类
 ```
-   List<FieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
-   differentFields.forEach(System.out::println);
+    @Test
+    public void testSingleObject() {
+        ExampleEntityOne example1 = new ExampleEntityOne();
+        example1.setByteExample("1".getBytes(StandardCharsets.UTF_8)[0]);
+        short s = 123;
+        example1.setShortExample(s);
+        example1.setIntegerExample(1);
+        example1.setLongExample(2L);
+        example1.setFloatExample(3.0F);
+        example1.setDoubleExample(4.0);
+        example1.setCharacterExample('5');
+        example1.setBooleanExample(true);
+        example1.setStringExample("6");
+        ExampleEntityTwo t1 = new ExampleEntityTwo(
+                "1".getBytes(StandardCharsets.UTF_8)[0],
+                s,
+                3,
+                4L,
+                5F,
+                6D,
+                '7',
+                false,
+                "8");
+        example1.setTwo(t1);
+
+        ExampleEntityOne example2 = new ExampleEntityOne();
+        example2.setByteExample("2".getBytes(StandardCharsets.UTF_8)[0]);
+        short s2 = 123;
+        example2.setShortExample(s2);
+        example2.setIntegerExample(1);
+        example2.setLongExample(2L);
+        example2.setFloatExample(3.0F);
+        example2.setDoubleExample(4.0);
+        example2.setCharacterExample('5');
+        example2.setBooleanExample(false);
+        example2.setStringExample("7");
+        ExampleEntityTwo t2 = new ExampleEntityTwo(
+                "1".getBytes(StandardCharsets.UTF_8)[0],
+                s2,
+                3,
+                4L,
+                5F,
+                6D,
+                '7',
+                true,
+                "8");
+        example2.setTwo(t2);
+        //获取不同属性
+        List<FieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
+        differentFields.forEach(System.out::println);
+        //输出
+        //{Byte中文名称1:50},{属性描述:Byte属性描述}
+        //{Boolean中文名称1:false},{属性描述:Boolean属性描述}
+        //{String中文名称1:7},{属性描述:String属性描述}
+        //{Boolean中文名称2:true},{属性描述:Boolean属性描述}
+    }
 ```
 
-* 返回集合输出结果
 
-````
-{Byte中文名称1:50},{属性描述:Byte属性描述}
-{Boolean中文名称1:false},{属性描述:Boolean属性描述}
-{String中文名称1:7},{属性描述:String属性描述}
-{Boolean中文名称2:true},{属性描述:Boolean属性描述}
-````
 
 ### 版本控制
 
@@ -94,6 +145,7 @@ src
 
 * 912176434@qq.com
 * zhoujingtong123@foxmail.com
+* yezeyue@gamil.com
 
 *您也可以在贡献者名单中参看所有参与该项目的开发者。*
 
@@ -108,6 +160,7 @@ src
 - [Img Shields](https://shields.io)
 - [Choose an Open Source License](https://choosealicense.com)
 - [GitHub Pages](https://pages.github.com)
+- [dadiyang](https://github.com/dadiyang/equator)
 
 <!-- links -->
 

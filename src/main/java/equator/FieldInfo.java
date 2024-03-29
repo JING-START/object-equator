@@ -33,6 +33,17 @@ public class FieldInfo {
         this.secondFieldType = secondFieldType;
     }
 
+    public FieldInfo(String fieldName, Class<?> firstFieldType, Object firstVal,Class<?> secondFieldType,Object secondVal,String fieldNote,String fieldDescribe) {
+        this.fieldName = fieldName;
+        this.firstFieldType = firstFieldType;
+        this.firstVal = firstVal;
+        this.secondFieldType = secondFieldType;
+        this.secondVal = secondVal;
+        this.fieldNote = fieldNote;
+        this.fieldDescribe = fieldDescribe;
+    }
+
+
     public FieldInfo(String fieldName, Class<?> firstFieldType, Object firstVal) {
         this.fieldName = fieldName;
         this.firstFieldType = firstFieldType;
@@ -140,7 +151,6 @@ public class FieldInfo {
 
     @Override
     public String toString() {
-        //   return "{fieldName='" + this.fieldName + '\'' + ", firstFieldType=" + this.firstFieldType + ", secondFieldType=" + this.secondFieldType + ", firstVal=" + this.firstVal + ", secondVal=" + this.secondVal + '}';
         String val = "{" + fieldNote + ":" + this.secondVal + "}";
         if (fieldDescribe != null && !"".equals(fieldDescribe)) {
             val += ",{属性描述:" + fieldDescribe + "}";
