@@ -60,24 +60,20 @@ public abstract class AbstractEquator implements Equator {
     /**
      * 判断对象是否为Collection类型
      *
-     * @param first
-     * @param second
+     * @param obj
      * @return
      */
-    boolean isCollection(Object first, Object second) {
-        Object obj = first == null ? second : first;
+    boolean isCollection(Object obj) {
         return obj instanceof Collection;
     }
 
     /**
      * 判断对象是否为Map类型
      *
-     * @param first
-     * @param second
+     * @param obj
      * @return
      */
-    boolean isMap(Object first, Object second) {
-        Object obj = first == null ? second : first;
+    boolean isMap(Object obj) {
         return obj instanceof Map;
     }
 
