@@ -45,139 +45,47 @@ public class FieldBaseEquator extends AbstractEquator {
         } else {
             //对象比较
             //获取对象属性集合
-            List<SimpleFieldInfo> firstInfoList = getSimpleFieldInfo(first);
-            List<SimpleFieldInfo> secondInfoList = getSimpleFieldInfo(second);
-
+            List<SimpleFieldInfo> firstInfoList = this.getSimpleFieldInfo(first);
+            List<SimpleFieldInfo> secondInfoList = this.getSimpleFieldInfo(second);
             List<FieldInfo> val = new LinkedList<>();
-            int bigSize = Math.max(firstInfoList.size(), secondInfoList.size());
-
-            boolean isLong = firstInfoList.size() <= secondInfoList.size();
-
-            for (int i = 0; i < bigSize; i++) {
-                SimpleFieldInfo simple1 = null;
-                SimpleFieldInfo simple2 = null;
-                boolean isEnd = true;
-                //second长
-                if (isLong) {
-                    Iterator<SimpleFieldInfo> iterator = firstInfoList.iterator();
-                    while (iterator.hasNext()) {
-                        SimpleFieldInfo next = iterator.next();
-                        if (isEnd) {
-                            //字段相同的
-                            if (secondInfoList.get(i).getFieldName().equals(next.getFieldName()) &&
-                                    secondInfoList.get(i).getFieldNote().equals(next.getFieldNote())) {
-                                simple1 = next;
-                                simple2 = secondInfoList.get(i);
-                                FieldInfo f1 = new FieldInfo(
-                                        simple1.getFieldName(),
-                                        simple1.getFieldType(),
-                                        simple1.getFieldVal(),
-
-                                        simple2.getFieldType(),
-                                        simple2.getFieldVal(),
-                                        simple1.getFieldNote(),
-                                        simple1.getFieldDescribe());
-                                val.add(f1);
-                                isEnd = false;
-                                //短的匹配上了，就踢出这个短的
-                                iterator.remove();
-                            }
-                        }
-                    }
-                    //短的全部遍历结束也没有匹配上，说明 长的那个是多出来的
-                    if (isEnd) {
-                        //第二个长，第二个多出来，val1 就设为空
-                        simple2 = secondInfoList.get(i);
+            Iterator<SimpleFieldInfo> firstIterator = firstInfoList.iterator();
+            while (firstIterator.hasNext()) {
+                SimpleFieldInfo firstNext = firstIterator.next();
+                Iterator<SimpleFieldInfo> secondIterator = secondInfoList.iterator();
+                while (secondIterator.hasNext()) {
+                    SimpleFieldInfo secondNext = secondIterator.next();
+                    //字段属性名称、字段中文名称相同的
+                    if (firstNext.getFieldName().equals(secondNext.getFieldName()) &&
+                            firstNext.getFieldNote().equals(secondNext.getFieldNote())) {
                         FieldInfo f1 = new FieldInfo(
-                                simple2.getFieldName(),
-                                simple2.getFieldType(),
-                                null,
-
-                                simple2.getFieldType(),
-                                simple2.getFieldVal(),
-                                simple2.getFieldNote(),
-                                simple2.getFieldDescribe());
+                                firstNext.getFieldName(),
+                                firstNext.getFieldType(),
+                                firstNext.getFieldVal(),
+                                secondNext.getFieldType(),
+                                secondNext.getFieldVal(),
+                                firstNext.getFieldNote(),
+                                firstNext.getFieldDescribe());
                         val.add(f1);
-                    }
-                    //first长
-                } else {
-                    Iterator<SimpleFieldInfo> iterator = secondInfoList.iterator();
-                    while (iterator.hasNext()) {
-                        SimpleFieldInfo next = iterator.next();
-                        if (isEnd) {
-                            //字段相同的，second短
-                            if (next.getFieldName().equals(firstInfoList.get(i).getFieldName()) &&
-                                    next.getFieldNote().equals(firstInfoList.get(i).getFieldNote())) {
-                                simple1 = firstInfoList.get(i);
-                                simple2 = next;
-                                FieldInfo f1 = new FieldInfo();
-                                f1.setFieldName(simple1.getFieldName());
-                                f1.setFirstFieldType(simple1.getFieldType());
-                                f1.setFirstVal(simple1.getFieldVal());
-                                f1.setSecondFieldType(simple2.getFieldType());
-                                f1.setSecondVal(simple2.getFieldVal());
-                                f1.setFieldNote(simple1.getFieldNote());
-                                f1.setFieldDescribe(simple1.getFieldDescribe());
-                                val.add(f1);
-                                isEnd = false;
-                                iterator.remove();
-                            }
-                        }
-                    }
-                    //短的全部遍历结束也没有匹配上，说明 长的那个是多出来的
-                    if (isEnd) {
-                        //第一个长，第一个就是多出来，val2 就设为空
-                        simple1 = firstInfoList.get(i);
-                        FieldInfo f1 = new FieldInfo();
-                        f1.setFieldName(simple1.getFieldName());
-                        f1.setFirstFieldType(simple1.getFieldType());
-                        f1.setFirstVal(simple1.getFieldVal());
-                        f1.setSecondFieldType(simple1.getFieldType());
-                        f1.setSecondVal(null);
-                        f1.setFieldNote(simple1.getFieldNote());
-                        f1.setFieldDescribe(simple1.getFieldDescribe());
-                        val.add(f1);
+                        //secondInfoList匹配上了，移除，以secondInfoList为主数据
+                        secondIterator.remove();
                     }
                 }
             }
-
-            //有没有可能短的里面的值不在长的里面
-            //second长
-            if (isLong) {
-                //第一个短的里面的值不在长 的里面
-                //短的值存在，就说明不在长的里面
-                if (!firstInfoList.isEmpty()) {
-                    firstInfoList.forEach(fir -> {
-                        //第一个长，第一个就是多出来，val2 就设为空
-                        SimpleFieldInfo var1 = fir;
-                        FieldInfo f1 = new FieldInfo();
-                        f1.setFieldName(var1.getFieldName());
-                        f1.setFirstFieldType(var1.getFieldType());
-                        f1.setFirstVal(var1.getFieldVal());
-                        f1.setSecondFieldType(var1.getFieldType());
-                        f1.setSecondVal(null);
-                        f1.setFieldNote(var1.getFieldNote());
-                        f1.setFieldDescribe(var1.getFieldDescribe());
-                        val.add(f1);
-                    });
-                }
-                //第一个长
-            } else {
-                //第二个短   短里面的值不在长的里面
-                if (!secondInfoList.isEmpty()) {
-                    secondInfoList.forEach(sec -> {
-                        FieldInfo f1 = new FieldInfo();
-                        f1.setFieldName(sec.getFieldName());
-                        f1.setFirstFieldType(sec.getFieldType());
-                        f1.setFirstVal(null);
-                        f1.setSecondFieldType(sec.getFieldType());
-                        f1.setSecondVal(sec.getFieldVal());
-                        f1.setFieldNote(sec.getFieldNote());
-                        f1.setFieldDescribe(sec.getFieldDescribe());
-                        val.add(f1);
-                    });
-                }
+            //secondInfoList有剩余没匹配，说明是新增的
+            if (!secondInfoList.isEmpty()) {
+                secondInfoList.forEach(sec -> {
+                    FieldInfo f1 = new FieldInfo();
+                    f1.setFieldName(sec.getFieldName());
+                    f1.setFirstFieldType(sec.getFieldType());
+                    f1.setFirstVal(null);
+                    f1.setSecondFieldType(sec.getFieldType());
+                    f1.setSecondVal(sec.getFieldVal());
+                    f1.setFieldNote(sec.getFieldNote());
+                    f1.setFieldDescribe(sec.getFieldDescribe());
+                    val.add(f1);
+                });
             }
+
             List<FieldInfo> diffFields = new LinkedList<>();
             val.forEach(info -> {
                 if (!this.isFieldEquals(info)) {
@@ -190,7 +98,7 @@ public class FieldBaseEquator extends AbstractEquator {
 
 
     private List<SimpleFieldInfo> getSimpleFieldInfo(Object obj) {
-        List<SimpleFieldInfo> infoList = new ArrayList<>();
+        List<SimpleFieldInfo> infoList = new LinkedList<>();
         for (Class<?> cls = obj.getClass(); cls != Object.class; cls = cls.getSuperclass()) {
             Field[] fields = cls.getDeclaredFields();
             for (Field field : fields) {
@@ -230,6 +138,12 @@ public class FieldBaseEquator extends AbstractEquator {
                     //TODO
                     if (field.isAnnotationPresent(EqualsAnnotation.class)) {
                         Collection list = (Collection) getFieldValueByName(field.getName(), obj);
+                        Optional.ofNullable(list).ifPresent(info -> {
+                            for (Object next : list) {
+                                List<SimpleFieldInfo> simpleFieldInfo = this.getSimpleFieldInfo(next);
+                                Optional.of(simpleFieldInfo).ifPresent(infoList::addAll);
+                            }
+                        });
                     }
                 } else if (Map.class.equals(type)) {
                     //TODO
@@ -244,8 +158,7 @@ public class FieldBaseEquator extends AbstractEquator {
                             Method method = descriptor.getReadMethod();
                             Object obj1 = null;
                             obj1 = method.invoke(obj);
-                            List<SimpleFieldInfo> list = getSimpleFieldInfo(obj1);
-                            infoList.addAll(list);
+                            Optional.ofNullable(obj1).ifPresent(obj2 -> infoList.addAll(this.getSimpleFieldInfo(obj2)));
                         } catch (IntrospectionException e) {
                             log.error("IntrospectionException", e);
                         } catch (IllegalAccessException e) {
@@ -253,7 +166,6 @@ public class FieldBaseEquator extends AbstractEquator {
                         } catch (InvocationTargetException e) {
                             log.error("InvocationTargetException", e);
                         }
-
                     }
                 }
             }

@@ -90,21 +90,9 @@ src
         example1.setCharacterExample('5');
         example1.setBooleanExample(true);
         example1.setStringExample("6");
-        ExampleEntityTwo t1 = new ExampleEntityTwo(
-                "1".getBytes(StandardCharsets.UTF_8)[0],
-                s,
-                3,
-                4L,
-                5F,
-                6D,
-                '7',
-                false,
-                "8");
-        example1.setTwo(t1);
-
         ExampleEntityOne example2 = new ExampleEntityOne();
-        example2.setByteExample("2".getBytes(StandardCharsets.UTF_8)[0]);
-        short s2 = 123;
+        example2.setByteExample("1".getBytes(StandardCharsets.UTF_8)[0]);
+        short s2 = 1234;
         example2.setShortExample(s2);
         example2.setIntegerExample(1);
         example2.setLongExample(2L);
@@ -113,25 +101,12 @@ src
         example2.setCharacterExample('5');
         example2.setBooleanExample(false);
         example2.setStringExample("7");
-        ExampleEntityTwo t2 = new ExampleEntityTwo(
-                "1".getBytes(StandardCharsets.UTF_8)[0],
-                s2,
-                3,
-                4L,
-                5F,
-                6D,
-                '7',
-                true,
-                "8");
-        example2.setTwo(t2);
-        //获取不同属性
         List<FieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
         differentFields.forEach(System.out::println);
-        //输出
-        //{Byte中文名称1:50},{属性描述:Byte属性描述}
+        //example2 short、boolean、String值不一致
+        //{{Short中文名称1:1234},{属性描述:Short属性描述}
         //{Boolean中文名称1:false},{属性描述:Boolean属性描述}
         //{String中文名称1:7},{属性描述:String属性描述}
-        //{Boolean中文名称2:true},{属性描述:Boolean属性描述}
     }
 ```
 
