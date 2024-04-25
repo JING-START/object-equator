@@ -39,8 +39,8 @@ public class FieldBaseEquator extends AbstractEquator {
         }
         //对象比较
         //获取对象属性集合
-        List<SimpleFieldInfo> firstInfoList = this.getSimpleFieldInfo(first);
-        List<SimpleFieldInfo> secondInfoList = this.getSimpleFieldInfo(second);
+        List<SimpleFieldInfo> firstInfoList = this.handlerObject(first);
+        List<SimpleFieldInfo> secondInfoList = this.handlerObject(second);
         List<FieldInfo> val = new LinkedList<>();
         Iterator<SimpleFieldInfo> firstIterator = firstInfoList.iterator();
         while (firstIterator.hasNext()) {
@@ -62,6 +62,8 @@ public class FieldBaseEquator extends AbstractEquator {
                     val.add(f1);
                     //secondInfoList匹配上了，移除，以secondInfoList为主数据
                     secondIterator.remove();
+                    //比较第一个匹配的
+                    break;
                 }
             }
         }
@@ -79,7 +81,6 @@ public class FieldBaseEquator extends AbstractEquator {
                 val.add(f1);
             });
         }
-
         List<FieldInfo> diffFields = new LinkedList<>();
         val.forEach(info -> {
             if (!this.isFieldEquals(info)) {
@@ -90,8 +91,13 @@ public class FieldBaseEquator extends AbstractEquator {
 
     }
 
-
-    private List<SimpleFieldInfo> getSimpleFieldInfo(Object obj) {
+    /**
+     * 处理解析对象，获取需要比对的基础属性
+     *
+     * @param obj
+     * @return
+     */
+    private List<SimpleFieldInfo> handlerObject(Object obj) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         if (this.isCollection(obj)) {
             //Collection类型比较
@@ -99,8 +105,10 @@ public class FieldBaseEquator extends AbstractEquator {
             infoList.addAll(this.parseCollectionFieldInfo(list));
             return infoList;
         } else if (this.isMap(obj)) {
-            //Map类型比较  TODO
-            return Collections.emptyList();
+            //Map类型比较
+            Map map = (Map) obj;
+            infoList.addAll(this.parseMapFieldInfo(map));
+            return infoList;
         } else {
             for (Class<?> cls = obj.getClass(); cls != Object.class; cls = cls.getSuperclass()) {
                 Field[] fields = cls.getDeclaredFields();
@@ -143,9 +151,9 @@ public class FieldBaseEquator extends AbstractEquator {
                             infoList.addAll(this.parseCollectionFieldInfo(list));
                         }
                     } else if (Map.class.equals(type)) {
-                        //TODO
                         if (field.isAnnotationPresent(EqualsAnnotation.class)) {
                             Map map = (Map) this.getFieldValueByName(field.getName(), obj);
+                            infoList.addAll(this.parseMapFieldInfo(map));
                         }
                     } else {
                         if (field.isAnnotationPresent(EqualsAnnotation.class)) {
@@ -155,7 +163,7 @@ public class FieldBaseEquator extends AbstractEquator {
                                 Method method = descriptor.getReadMethod();
                                 Object obj1 = null;
                                 obj1 = method.invoke(obj);
-                                Optional.ofNullable(obj1).ifPresent(obj2 -> infoList.addAll(this.getSimpleFieldInfo(obj2)));
+                                Optional.ofNullable(obj1).ifPresent(obj2 -> infoList.addAll(this.handlerObject(obj2)));
                             } catch (IntrospectionException e) {
                                 log.error("IntrospectionException", e);
                             } catch (IllegalAccessException e) {
@@ -171,21 +179,35 @@ public class FieldBaseEquator extends AbstractEquator {
         return infoList;
     }
 
+    /**
+     * 解析集合对象
+     *
+     * @param list
+     * @return
+     */
     private List<SimpleFieldInfo> parseCollectionFieldInfo(Collection<?> list) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         Optional.ofNullable(list).ifPresent(info -> {
             for (Object next : list) {
-                List<SimpleFieldInfo> simpleFieldInfo = this.getSimpleFieldInfo(next);
+                List<SimpleFieldInfo> simpleFieldInfo = this.handlerObject(next);
                 Optional.of(simpleFieldInfo).ifPresent(infoList::addAll);
             }
         });
         return infoList;
     }
 
+    /**
+     * 解析Map对象
+     *
+     * @param map
+     * @return
+     */
     private List<SimpleFieldInfo> parseMapFieldInfo(Map map) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         Optional.ofNullable(map).ifPresent(info -> {
-
+            map.forEach((k, v) -> {
+                infoList.addAll(this.handlerObject(v));
+            });
         });
         return infoList;
     }
@@ -198,7 +220,7 @@ public class FieldBaseEquator extends AbstractEquator {
             String firstLetter = fieldName.substring(0, 1).toUpperCase();
             String getter = "get" + firstLetter + fieldName.substring(1);
             Method method = o.getClass().getMethod(getter, new Class[]{});
-            return method.invoke(o, new Object[]{});
+            return method.invoke(o);
         } catch (Exception e) {
             return null;
         }
