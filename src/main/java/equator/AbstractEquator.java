@@ -9,28 +9,12 @@ import java.util.*;
 
 public abstract class AbstractEquator implements Equator {
     private static final List<Class<?>> WRAPPER = Arrays.asList(Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class, Boolean.class, String.class);
-    private final List<String> includeFields;
-    private final List<String> excludeFields;
 
     public AbstractEquator() {
-        this.includeFields = Collections.emptyList();
-        this.excludeFields = Collections.emptyList();
     }
 
     protected boolean isFieldEquals(FieldInfo fieldInfo) {
-        if (this.isExclude(fieldInfo)) {
-            return true;
-        } else {
-            return !this.isInclude(fieldInfo) || this.nullableEquals(fieldInfo.getFirstVal(), fieldInfo.getSecondVal());
-        }
-    }
-
-    protected boolean isInclude(FieldInfo fieldInfo) {
-        return this.includeFields == null || this.includeFields.isEmpty() || this.includeFields.contains(fieldInfo.getFieldName());
-    }
-
-    protected boolean isExclude(FieldInfo fieldInfo) {
-        return this.excludeFields != null && !this.excludeFields.isEmpty() && this.excludeFields.contains(fieldInfo.getFieldName());
+        return this.nullableEquals(fieldInfo.getFirstVal(), fieldInfo.getSecondVal());
     }
 
     List<FieldInfo> compareSimpleField(Object first, Object second) {
