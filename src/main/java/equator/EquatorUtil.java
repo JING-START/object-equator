@@ -2,9 +2,7 @@ package equator;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 public class EquatorUtil {
@@ -12,7 +10,7 @@ public class EquatorUtil {
     /**
      * 属性比较对象
      */
-    private static final FieldBaseEquator fieldBaseEquator = new FieldBaseEquator();
+    private static final BaseFieldEquator fieldBaseEquator = new BaseFieldEquator();
 
     /**
      * 返回被修改的属性值
@@ -23,9 +21,6 @@ public class EquatorUtil {
      * @return new diff fields
      */
     public static List<FieldInfo> getDifferentFields(Object first, Object second) {
-        if (first == second || Objects.equals(first, second)) {
-            return Collections.emptyList();
-        }
         return fieldBaseEquator.getDifferentFields(first, second);
     }
 }

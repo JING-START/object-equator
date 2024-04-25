@@ -18,10 +18,12 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
+ * 基础属性比较器
+ *
  * @author 123先生
  */
 @Slf4j
-public class FieldBaseEquator extends AbstractEquator {
+public class BaseFieldEquator extends AbstractEquator {
 
     /**
      * 返回被修改的属性值
@@ -33,6 +35,9 @@ public class FieldBaseEquator extends AbstractEquator {
      */
     @Override
     public List<FieldInfo> getDifferentFields(Object first, Object second) {
+        if (first == second || Objects.equals(first, second)) {
+            return Collections.emptyList();
+        }
         if (super.isSimpleField(first, second)) {
             //基础类型比较
             return super.compareSimpleField(first, second);
