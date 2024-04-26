@@ -20,7 +20,7 @@ public class EquatorUtil {
      * @param second new object
      * @return new diff fields
      */
-    public static List<FieldInfo> getDifferentFields(Object first, Object second) {
+    public static List<EquatorFieldInfo> getDifferentFields(Object first, Object second) {
         return fieldBaseEquator.getDifferentFields(first, second);
     }
 }

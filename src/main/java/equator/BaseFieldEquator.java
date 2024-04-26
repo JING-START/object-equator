@@ -6,8 +6,6 @@
 package equator;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.beans.IntrospectionException;
@@ -34,7 +32,7 @@ public class BaseFieldEquator extends AbstractEquator {
      * @return new diff fields
      */
     @Override
-    public List<FieldInfo> getDifferentFields(Object first, Object second) {
+    public List<EquatorFieldInfo> getDifferentFields(Object first, Object second) {
         if (first == second || Objects.equals(first, second)) {
             return Collections.emptyList();
         }
@@ -44,9 +42,9 @@ public class BaseFieldEquator extends AbstractEquator {
         }
         //对象比较
         //获取对象属性集合
-        List<SimpleFieldInfo> firstInfoList = this.handlerObject(first);
-        List<SimpleFieldInfo> secondInfoList = this.handlerObject(second);
-        List<FieldInfo> val = new LinkedList<>();
+        List<SimpleFieldInfo> firstInfoList = this.doHandler(first);
+        List<SimpleFieldInfo> secondInfoList = this.doHandler(second);
+        List<EquatorFieldInfo> val = new LinkedList<>();
         Iterator<SimpleFieldInfo> firstIterator = firstInfoList.iterator();
         while (firstIterator.hasNext()) {
             SimpleFieldInfo firstNext = firstIterator.next();
@@ -56,14 +54,15 @@ public class BaseFieldEquator extends AbstractEquator {
                 //字段属性名称、字段中文名称相同的
                 if (firstNext.getFieldName().equals(secondNext.getFieldName()) &&
                         firstNext.getFieldNote().equals(secondNext.getFieldNote())) {
-                    FieldInfo f1 = new FieldInfo(
-                            firstNext.getFieldName(),
-                            firstNext.getFieldType(),
-                            firstNext.getFieldVal(),
-                            secondNext.getFieldType(),
-                            secondNext.getFieldVal(),
-                            firstNext.getFieldNote(),
-                            firstNext.getFieldDescribe());
+                    EquatorFieldInfo f1 = new EquatorFieldInfo()
+                            .setFieldName(firstNext.getFieldName())
+                            .setFieldNote(firstNext.getFieldNote())
+                            .setFieldDescribe(firstNext.getFieldDescribe())
+                            .setFirstFieldType(firstNext.getFieldType())
+                            .setFirstVal(firstNext.getFieldVal())
+                            .setSecondFieldType(secondNext.getFieldType())
+                            .setSecondVal(secondNext.getFieldVal());
+
                     val.add(f1);
                     //secondInfoList匹配上了，移除，以secondInfoList为主数据
                     secondIterator.remove();
@@ -75,20 +74,20 @@ public class BaseFieldEquator extends AbstractEquator {
         //secondInfoList有剩余没匹配，说明是新增的
         if (!secondInfoList.isEmpty()) {
             secondInfoList.forEach(sec -> {
-                FieldInfo f1 = new FieldInfo();
-                f1.setFieldName(sec.getFieldName());
-                f1.setFirstFieldType(sec.getFieldType());
-                f1.setFirstVal(null);
-                f1.setSecondFieldType(sec.getFieldType());
-                f1.setSecondVal(sec.getFieldVal());
-                f1.setFieldNote(sec.getFieldNote());
-                f1.setFieldDescribe(sec.getFieldDescribe());
+                EquatorFieldInfo f1 = new EquatorFieldInfo()
+                        .setFieldName(sec.getFieldName())
+                        .setFieldNote(sec.getFieldNote())
+                        .setFieldDescribe(sec.getFieldDescribe())
+                        .setFirstFieldType(sec.getFieldType())
+                        .setFirstVal(null)
+                        .setSecondFieldType(sec.getFieldType())
+                        .setSecondVal(sec.getFieldVal());
                 val.add(f1);
             });
         }
-        List<FieldInfo> diffFields = new LinkedList<>();
+        List<EquatorFieldInfo> diffFields = new LinkedList<>();
         val.forEach(info -> {
-            if (!this.isFieldEquals(info)) {
+            if (!super.isFieldEquals(info)) {
                 diffFields.add(info);
             }
         });
@@ -102,80 +101,95 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param obj
      * @return
      */
-    private List<SimpleFieldInfo> handlerObject(Object obj) {
+    @Override
+    public List<SimpleFieldInfo> doHandler(Object obj) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
-        if (this.isCollection(obj)) {
+        if (super.isCollection(obj)) {
             //Collection类型比较
             Collection<?> list = (Collection) obj;
             infoList.addAll(this.parseCollectionFieldInfo(list));
             return infoList;
-        } else if (this.isMap(obj)) {
+        } else if (super.isMap(obj)) {
             //Map类型比较
             Map map = (Map) obj;
             infoList.addAll(this.parseMapFieldInfo(map));
             return infoList;
         } else {
-            for (Class<?> cls = obj.getClass(); cls != Object.class; cls = cls.getSuperclass()) {
-                Field[] fields = cls.getDeclaredFields();
-                for (Field field : fields) {
-                    Class<?> type = field.getType();
-                    //判断字段上是否有注解@EqualsAnnotation
-                    EqualsAnnotation equalsAnnotation = field.getAnnotation(EqualsAnnotation.class);
-                    //判断属性类型，基础类型
-                    if (isSimpleField(type)) {
-                        //判断是否合成字段,由编译器生成的，在源代码中没有出现的，都会被标记为 synthetic
-                        if (!field.isSynthetic()) {
-                            //判断字段是否需要比较
-                            if (field.isAnnotationPresent(EqualsAnnotation.class)) {
-                                //属性中文别名
-                                String value = equalsAnnotation.value();
-                                if ("".equals(value) || value == null) {
-                                    value = field.getName();
-                                }
-                                //属性描述
-                                String describe = equalsAnnotation.describe();
-                                //属性名称
-                                String fieldName = field.getName();
-                                //属性值
-                                Object firstVal = null;
-                                Class<?> firstType;
-                                field.setAccessible(true);
-                                try {
-                                    firstVal = field.get(obj);
-                                } catch (IllegalAccessException e) {
-                                    log.error("获取属性值失败", e);
-                                }
-                                firstType = field.getType();
-                                SimpleFieldInfo fieldInfo = new SimpleFieldInfo(fieldName, value, describe, firstType, firstVal);
-                                infoList.add(fieldInfo);
+            //解析对象
+            infoList.addAll(this.parseObject(obj));
+        }
+        return infoList;
+    }
+
+    /**
+     * 解析集合对象
+     *
+     * @param obj
+     * @return
+     */
+    @Override
+    public List<SimpleFieldInfo> parseObject(Object obj) {
+        List<SimpleFieldInfo> infoList = new LinkedList<>();
+        for (Class<?> cls = obj.getClass(); cls != Object.class; cls = cls.getSuperclass()) {
+            Field[] fields = cls.getDeclaredFields();
+            for (Field field : fields) {
+                Class<?> type = field.getType();
+                //判断字段上是否有注解@EqualsAnnotation
+                EqualsAnnotation equalsAnnotation = field.getAnnotation(EqualsAnnotation.class);
+                //判断属性类型，基础类型
+                if (super.isSimpleField(type)) {
+                    //判断是否合成字段,由编译器生成的，在源代码中没有出现的，都会被标记为 synthetic
+                    if (!field.isSynthetic()) {
+                        //判断字段是否需要比较
+                        if (field.isAnnotationPresent(EqualsAnnotation.class)) {
+                            //属性中文别名
+                            String value = equalsAnnotation.value();
+                            if ("".equals(value) || value == null) {
+                                value = field.getName();
                             }
-                        }
-                    } else if (Collection.class.isAssignableFrom(field.getType())) {
-                        if (field.isAnnotationPresent(EqualsAnnotation.class)) {
-                            Collection list = (Collection) this.getFieldValueByName(field.getName(), obj);
-                            infoList.addAll(this.parseCollectionFieldInfo(list));
-                        }
-                    } else if (Map.class.equals(type)) {
-                        if (field.isAnnotationPresent(EqualsAnnotation.class)) {
-                            Map map = (Map) this.getFieldValueByName(field.getName(), obj);
-                            infoList.addAll(this.parseMapFieldInfo(map));
-                        }
-                    } else {
-                        if (field.isAnnotationPresent(EqualsAnnotation.class)) {
-                            PropertyDescriptor descriptor = null;
+                            //属性描述
+                            String describe = equalsAnnotation.describe();
+                            //属性名称
+                            String fieldName = field.getName();
+                            //属性值
+                            Object firstVal = null;
+                            Class<?> firstType;
+                            field.setAccessible(true);
                             try {
-                                descriptor = new PropertyDescriptor(field.getName(), cls);
-                                Method method = descriptor.getReadMethod();
-                                Object obj1 = null;
-                                obj1 = method.invoke(obj);
-                                Optional.ofNullable(obj1).ifPresent(obj2 -> infoList.addAll(this.handlerObject(obj2)));
-                            } catch (IntrospectionException e) {
-                                log.error("IntrospectionException", e);
+                                firstVal = field.get(obj);
                             } catch (IllegalAccessException e) {
-                                log.error("IllegalAccessException", e);
-                            } catch (InvocationTargetException e) {
-                                log.error("InvocationTargetException", e);
+                                log.error("获取属性值失败", e);
                             }
+                            firstType = field.getType();
+                            SimpleFieldInfo fieldInfo = new SimpleFieldInfo(fieldName, value, describe, firstType, firstVal);
+                            infoList.add(fieldInfo);
+                        }
+                    }
+                } else if (Collection.class.isAssignableFrom(field.getType())) {
+                    if (field.isAnnotationPresent(EqualsAnnotation.class)) {
+                        Collection list = (Collection) super.getFieldValueByName(field.getName(), obj);
+                        infoList.addAll(this.parseCollectionFieldInfo(list));
+                    }
+                } else if (Map.class.equals(type)) {
+                    if (field.isAnnotationPresent(EqualsAnnotation.class)) {
+                        Map map = (Map) super.getFieldValueByName(field.getName(), obj);
+                        infoList.addAll(this.parseMapFieldInfo(map));
+                    }
+                } else {
+                    if (field.isAnnotationPresent(EqualsAnnotation.class)) {
+                        PropertyDescriptor descriptor = null;
+                        try {
+                            descriptor = new PropertyDescriptor(field.getName(), cls);
+                            Method method = descriptor.getReadMethod();
+                            Object obj1 = null;
+                            obj1 = method.invoke(obj);
+                            Optional.ofNullable(obj1).ifPresent(obj2 -> infoList.addAll(this.doHandler(obj2)));
+                        } catch (IntrospectionException e) {
+                            log.error("IntrospectionException", e);
+                        } catch (IllegalAccessException e) {
+                            log.error("IllegalAccessException", e);
+                        } catch (InvocationTargetException e) {
+                            log.error("InvocationTargetException", e);
                         }
                     }
                 }
@@ -190,11 +204,12 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param list
      * @return
      */
-    private List<SimpleFieldInfo> parseCollectionFieldInfo(Collection<?> list) {
+    @Override
+    public List<SimpleFieldInfo> parseCollectionFieldInfo(Collection<?> list) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         Optional.ofNullable(list).ifPresent(info -> {
             for (Object next : list) {
-                List<SimpleFieldInfo> simpleFieldInfo = this.handlerObject(next);
+                List<SimpleFieldInfo> simpleFieldInfo = this.doHandler(next);
                 Optional.of(simpleFieldInfo).ifPresent(infoList::addAll);
             }
         });
@@ -207,52 +222,16 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param map
      * @return
      */
-    private List<SimpleFieldInfo> parseMapFieldInfo(Map map) {
+    @Override
+    public List<SimpleFieldInfo> parseMapFieldInfo(Map map) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         Optional.ofNullable(map).ifPresent(info -> {
             map.forEach((k, v) -> {
-                infoList.addAll(this.handlerObject(v));
+                infoList.addAll(this.doHandler(v));
             });
         });
         return infoList;
     }
 
-    /**
-     * 根据属性名获取属性值
-     */
-    private Object getFieldValueByName(String fieldName, Object o) {
-        try {
-            String firstLetter = fieldName.substring(0, 1).toUpperCase();
-            String getter = "get" + firstLetter + fieldName.substring(1);
-            Method method = o.getClass().getMethod(getter, new Class[]{});
-            return method.invoke(o);
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
-    @Data
-    @AllArgsConstructor
-    static class SimpleFieldInfo {
-        /**
-         * 属性名
-         */
-        private String fieldName;
-        /**
-         * 属性中文
-         */
-        private String fieldNote;
-        /**
-         * 属性描述
-         */
-        private String fieldDescribe;
-        /**
-         * 属性类型
-         */
-        private Class<?> fieldType;
-        /**
-         * 属性值
-         */
-        private Object fieldVal;
-    }
 }

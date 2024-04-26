@@ -3,9 +3,7 @@
 对象属性比较器，旧对象和新对象比较，获取新对象被修改的属性
 
 * 目前支持对象属性基础类型比较，包括String,支持对象嵌套
-* 支持集合属性类型，Collections,Map
-
-
+* 支持集合属性类型，Collection,Map
 
 <!-- PROJECT SHIELDS -->
 
@@ -33,7 +31,9 @@
 
 ###### 技术架构
 
-使用java反射机制获取比较对象属性
+实现方式：使用java反射机制获取比较对象属性  
+如果对象属性是基础类型或String并且添加了比较注解，例：@EqualsAnnotation(value = "String中文名称1", describe = "String属性描述")，那么就会比较该属性值  
+如果是比较自定义对象bean或Collection、Map属性，如果添加了注解，则会递归进该引用对象，找到最底基础类型或String
 
 ###### 开发前的配置要求
 
@@ -43,7 +43,8 @@
 
 1. 复制[equator]目录即可使用
 
-```sh
+```
+https://github.com/JING-START/object-equator.git
 git clone https://github.com/JING-START/equator.git
 ```
 

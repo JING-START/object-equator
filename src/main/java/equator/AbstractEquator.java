@@ -5,6 +5,7 @@
 package equator;
 
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 public abstract class AbstractEquator implements Equator {
@@ -13,18 +14,37 @@ public abstract class AbstractEquator implements Equator {
     public AbstractEquator() {
     }
 
-    protected boolean isFieldEquals(FieldInfo fieldInfo) {
-        return this.nullableEquals(fieldInfo.getFirstVal(), fieldInfo.getSecondVal());
+    /**
+     * 最终值比较
+     *
+     * @param fieldInfo
+     * @return
+     */
+    boolean isFieldEquals(EquatorFieldInfo fieldInfo) {
+        return Objects.deepEquals(fieldInfo.getFirstVal(), fieldInfo.getSecondVal());
     }
 
-    List<FieldInfo> compareSimpleField(Object first, Object second) {
+    /**
+     * 基础类型比较封装
+     *
+     * @param first
+     * @param second
+     * @return
+     */
+    List<EquatorFieldInfo> compareSimpleField(Object first, Object second) {
         boolean eq = Objects.equals(first, second);
         if (eq) {
             return Collections.emptyList();
         } else {
             Object obj = first == null ? second : first;
             Class<?> clazz = obj.getClass();
-            return Collections.singletonList(new FieldInfo(clazz.getSimpleName(), clazz, first, second));
+            return Collections.singletonList(new EquatorFieldInfo()
+                    .setFieldName(clazz.getSimpleName())
+                    .setFirstFieldType(clazz)
+                    .setFirstVal(first)
+                    .setSecondFieldType(clazz)
+                    .setSecondVal(second)
+            );
         }
     }
 
@@ -39,6 +59,18 @@ public abstract class AbstractEquator implements Equator {
         Object obj = first == null ? second : first;
         Class<?> clazz = obj.getClass();
         return clazz.isPrimitive() || WRAPPER.contains(clazz);
+    }
+
+    /**
+     * 判断属性是否基础类型
+     *
+     * @param clazz
+     * @return
+     */
+    boolean isSimpleField(Class<?> clazz) {
+        boolean primitive = clazz.isPrimitive();
+        boolean contains = WRAPPER.contains(clazz);
+        return primitive || contains;
     }
 
     /**
@@ -61,13 +93,18 @@ public abstract class AbstractEquator implements Equator {
         return obj instanceof Map;
     }
 
-    boolean isSimpleField(Class<?> clazz) {
-        boolean primitive = clazz.isPrimitive();
-        boolean contains = WRAPPER.contains(clazz);
-        return primitive || contains;
+    /**
+     * 根据属性名获取属性值
+     */
+    Object getFieldValueByName(String fieldName, Object o) {
+        try {
+            String firstLetter = fieldName.substring(0, 1).toUpperCase();
+            String getter = "get" + firstLetter + fieldName.substring(1);
+            Method method = o.getClass().getMethod(getter);
+            return method.invoke(o);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    private boolean nullableEquals(Object first, Object second) {
-        return first instanceof Collection && second instanceof Collection ? Objects.deepEquals(((Collection) first).toArray(), ((Collection) second).toArray()) : Objects.deepEquals(first, second);
-    }
 }
