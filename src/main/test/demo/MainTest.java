@@ -41,7 +41,7 @@ public class MainTest {
         example2.setCharacterExample('5');
         example2.setBooleanExample(false);
         example2.setStringExample("7");
-        List<EquatorFieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
+        List<EquatorFieldInfo> differentFields = EquatorUtil.BASE_FIELD_EQUATOR.getDifferentFields(example1, example2);
         differentFields.forEach(System.out::println);
         //example2 short、boolean、String值不一致
         //{{Short中文名称1:1234},{属性描述:Short属性描述}
@@ -75,7 +75,7 @@ public class MainTest {
         two2.setThree(three);
         example2.setTwo(two2);
 
-        List<EquatorFieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
+        List<EquatorFieldInfo> differentFields = EquatorUtil.BASE_FIELD_EQUATOR.getDifferentFields(example1, example2);
         differentFields.forEach(System.out::println);
         //example2 short、对象two.short值不一致
         //{Short中文名称1:1234},{属性描述:Short属性描述}

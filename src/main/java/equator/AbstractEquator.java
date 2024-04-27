@@ -1,7 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
 package equator;
 
 
@@ -17,8 +13,8 @@ public abstract class AbstractEquator implements Equator {
     /**
      * 最终值比较
      *
-     * @param fieldInfo
-     * @return
+     * @param fieldInfo 属性结果封装类
+     * @return 值比较结果
      */
     boolean isFieldEquals(EquatorFieldInfo fieldInfo) {
         return Objects.deepEquals(fieldInfo.getFirstVal(), fieldInfo.getSecondVal());
@@ -27,9 +23,9 @@ public abstract class AbstractEquator implements Equator {
     /**
      * 基础类型比较封装
      *
-     * @param first
-     * @param second
-     * @return
+     * @param first  旧对象
+     * @param second 新对象
+     * @return 封装比较类
      */
     List<EquatorFieldInfo> compareSimpleField(Object first, Object second) {
         boolean eq = Objects.equals(first, second);
@@ -51,9 +47,9 @@ public abstract class AbstractEquator implements Equator {
     /**
      * 判断对象是否为基础类型
      *
-     * @param first
-     * @param second
-     * @return
+     * @param first  旧对象
+     * @param second 新对象
+     * @return 比较是否基础类型或String
      */
     boolean isSimpleField(Object first, Object second) {
         Object obj = first == null ? second : first;
@@ -64,20 +60,18 @@ public abstract class AbstractEquator implements Equator {
     /**
      * 判断属性是否基础类型
      *
-     * @param clazz
-     * @return
+     * @param clazz 对象Class
+     * @return 比较是否基础类型或String
      */
     boolean isSimpleField(Class<?> clazz) {
-        boolean primitive = clazz.isPrimitive();
-        boolean contains = WRAPPER.contains(clazz);
-        return primitive || contains;
+        return clazz.isPrimitive() || WRAPPER.contains(clazz);
     }
 
     /**
      * 判断对象是否为Collection类型
      *
-     * @param obj
-     * @return
+     * @param obj 判断对象
+     * @return 判断对象是否属于collection
      */
     boolean isCollection(Object obj) {
         return obj instanceof Collection;
@@ -86,8 +80,8 @@ public abstract class AbstractEquator implements Equator {
     /**
      * 判断对象是否为Map类型
      *
-     * @param obj
-     * @return
+     * @param obj 判断对象
+     * @return 判断对象是否属于map
      */
     boolean isMap(Object obj) {
         return obj instanceof Map;
@@ -95,6 +89,10 @@ public abstract class AbstractEquator implements Equator {
 
     /**
      * 根据属性名获取属性值
+     *
+     * @param fieldName 属性名称
+     * @param o         对象
+     * @return 属性值
      */
     Object getFieldValueByName(String fieldName, Object o) {
         try {

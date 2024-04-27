@@ -4,6 +4,7 @@
 
 * 目前支持对象属性基础类型比较，包括String,支持对象嵌套
 * 支持集合属性类型，Collection,Map
+* 如果觉得有用，麻烦点个star
 
 <!-- PROJECT SHIELDS -->
 
@@ -33,7 +34,7 @@
 
 实现方式：使用java反射机制获取比较对象属性  
 如果对象属性是基础类型或String并且添加了比较注解，例：@EqualsAnnotation(value = "String中文名称1", describe = "String属性描述")，那么就会比较该属性值  
-如果是比较自定义对象bean或Collection、Map属性，如果添加了注解，则会递归进该引用对象，找到最底基础类型或String
+如果是比较自定义对象bean或Collection、Map属性，如果添加了注解，则会递归进该引用对象，找到最低层属性基础类型或String
 
 ###### 开发前的配置要求
 
