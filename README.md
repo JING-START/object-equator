@@ -3,8 +3,9 @@
 对象属性比较器，旧对象和新对象比较，获取新对象被修改的属性
 
 * 目前支持对象属性基础类型比较，包括String,支持对象嵌套
-* 支持集合属性类型，Collection,Map
-* 如果觉得有用，麻烦点个star
+* 支持集合属性类型属性，Collection,Map
+* 如果觉得有用，麻烦点个star，如果有好建议可以邮件或评论
+* [ 项目地址](https://github.com/JING-START/object-equator)：<https://github.com/JING-START/object-equator>
 
 <!-- PROJECT SHIELDS -->
 
@@ -40,7 +41,7 @@
 
 1. 作者jdk开发版本:jdk11
 
-###### **安装步骤**
+###### 安装步骤
 
 1. 复制[equator]目录即可使用
 
@@ -65,7 +66,6 @@ src
         │          EquatorFieldInfo.java
         │          EquatorUtil.java
         │          SimpleFieldInfo.java
-        │
         └─test
             └─demo
                     ExampleEntityOne.java
@@ -113,8 +113,6 @@ src
         //{String中文名称1:7},{属性描述:String属性描述}
     }
 ```
-
-
 
 ### 版本控制
 

@@ -81,4 +81,25 @@ public class MainTest {
         //{Short中文名称1:1234},{属性描述:Short属性描述}
         //{Short中文名称2:1234},{属性描述:Short2属性描述}
     }
+
+
+    /**
+     * 对象集合属性基础比较
+     */
+    @Test
+    public void testCollectionObject() {
+        ExampleEntityOne example1 = new ExampleEntityOne();
+        example1.setStringExample("String属性值1");
+        ExampleEntityOne example2 = new ExampleEntityOne();
+        example2.setStringExample("String属性值2");
+
+
+
+
+        List<EquatorFieldInfo> differentFields = EquatorUtil.BASE_FIELD_EQUATOR.getDifferentFields(example1, example2);
+        differentFields.forEach(System.out::println);
+        //example2 short、对象two.short值不一致
+        //{Short中文名称1:1234},{属性描述:Short属性描述}
+        //{Short中文名称2:1234},{属性描述:Short2属性描述}
+    }
 }
