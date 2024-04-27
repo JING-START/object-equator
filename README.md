@@ -59,15 +59,17 @@ src
         ├─java
         │  └─equator
         │          AbstractEquator.java
+        │          BaseFieldEquator.java
         │          EqualsAnnotation.java
         │          Equator.java
+        │          EquatorFieldInfo.java
         │          EquatorUtil.java
-        │          FieldBaseEquator.java
-        │          FieldInfo.java
+        │          SimpleFieldInfo.java
         │
         └─test
             └─demo
                     ExampleEntityOne.java
+                    ExampleEntityThree.java
                     ExampleEntityTwo.java
                     MainTest.java
 ```
@@ -103,7 +105,7 @@ src
         example2.setCharacterExample('5');
         example2.setBooleanExample(false);
         example2.setStringExample("7");
-        List<FieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
+        List<EquatorFieldInfo> differentFields = EquatorUtil.BASE_FIELD_EQUATOR.getDifferentFields(example1, example2);
         differentFields.forEach(System.out::println);
         //example2 short、boolean、String值不一致
         //{{Short中文名称1:1234},{属性描述:Short属性描述}
