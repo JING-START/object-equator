@@ -29,11 +29,11 @@ public class EquatorFieldInfo {
      */
     private Class<?> secondFieldType;
     /**
-     * 第一属性值
+     * 第一属性值，变更前数据
      */
     private Object firstVal;
     /**
-     * 第二属性值
+     * 第二属性值，变更后数据
      */
     private Object secondVal;
 
