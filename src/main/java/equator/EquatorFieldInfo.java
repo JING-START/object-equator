@@ -17,7 +17,7 @@ public class EquatorFieldInfo {
      */
     private String fieldNote;
     /**
-     * 属性代表描述
+     * 属性描述
      */
     private String fieldDescribe;
     /**

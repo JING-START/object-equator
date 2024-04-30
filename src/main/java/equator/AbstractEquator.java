@@ -7,9 +7,6 @@ import java.util.*;
 public abstract class AbstractEquator implements Equator {
     private static final List<Class<?>> WRAPPER = Arrays.asList(Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class, Boolean.class, String.class);
 
-    public AbstractEquator() {
-    }
-
     /**
      * 最终值比较
      *

@@ -79,39 +79,44 @@ src
 * 被比较对象需要添加注解如：
   ``@EqualsAnnotation(value = "Byte中文名称1", describe = "Byte属性描述")``
 
-* 调用工具类方法，传入比较对象example1,example2，返回example2被修改的属性值,具体可以运行测试类
+* 调用工具类方法，传入比较对象example1,example2，返回example2被修改的属性值,具体可以查看运行测试类:MainTest
 ```
-    @Test
+     @Test
     public void testSingleObject() {
         ExampleEntityOne example1 = new ExampleEntityOne();
-        example1.setByteExample("1".getBytes(StandardCharsets.UTF_8)[0]);
-        short s = 123;
-        example1.setShortExample(s);
-        example1.setIntegerExample(1);
-        example1.setLongExample(2L);
-        example1.setFloatExample(3.0F);
-        example1.setDoubleExample(4.0);
-        example1.setCharacterExample('5');
         example1.setBooleanExample(true);
         example1.setStringExample("6");
         ExampleEntityOne example2 = new ExampleEntityOne();
         example2.setByteExample("1".getBytes(StandardCharsets.UTF_8)[0]);
-        short s2 = 1234;
-        example2.setShortExample(s2);
-        example2.setIntegerExample(1);
-        example2.setLongExample(2L);
-        example2.setFloatExample(3.0F);
-        example2.setDoubleExample(4.0);
-        example2.setCharacterExample('5');
         example2.setBooleanExample(false);
         example2.setStringExample("7");
         List<EquatorFieldInfo> differentFields = EquatorUtil.BASE_FIELD_EQUATOR.getDifferentFields(example1, example2);
-        differentFields.forEach(System.out::println);
-        //example2 short、boolean、String值不一致
-        //{{Short中文名称1:1234},{属性描述:Short属性描述}
-        //{Boolean中文名称1:false},{属性描述:Boolean属性描述}
-        //{String中文名称1:7},{属性描述:String属性描述}
+        differentFields.forEach(info -> {
+            System.out.println("属性名: " + info.getFieldName());
+            System.out.println("属性中文名: " + info.getFieldNote());
+            System.out.println("属性描述: " + info.getFieldDescribe());
+            System.out.println("old属性类型: " + info.getFirstFieldType());
+            System.out.println("old属性值: " + info.getFirstVal());
+            System.out.println("new属性值: " + info.getSecondVal());
+            System.out.println("====================================================");
+        });
     }
+```
+输出
+```
+属性名: booleanExample
+属性中文名: Boolean中文名称1
+属性描述: Boolean属性描述
+old属性类型: class java.lang.Boolean
+old属性值: true
+new属性值: false
+====================================================
+属性名: stringExample
+属性中文名: String中文名称1
+属性描述: String属性描述
+old属性类型: class java.lang.String
+old属性值: 6
+new属性值: 7
 ```
 
 ### 版本控制
