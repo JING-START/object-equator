@@ -90,7 +90,7 @@ src
         example2.setByteExample("1".getBytes(StandardCharsets.UTF_8)[0]);
         example2.setBooleanExample(false);
         example2.setStringExample("7");
-        List<EquatorFieldInfo> differentFields = EquatorUtil.BASE_FIELD_EQUATOR.getDifferentFields(example1, example2);
+        List<EquatorFieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
         differentFields.forEach(info -> {
             System.out.println("属性名: " + info.getFieldName());
             System.out.println("属性中文名: " + info.getFieldNote());
