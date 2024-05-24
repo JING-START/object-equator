@@ -96,8 +96,7 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param obj
      * @return
      */
-    @Override
-    public List<SimpleFieldInfo> doHandler(Object obj) {
+    private List<SimpleFieldInfo> doHandler(Object obj) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         if (super.isCollection(obj)) {
             //Collection类型比较
@@ -122,8 +121,7 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param obj
      * @return
      */
-    @Override
-    public List<SimpleFieldInfo> parseObject(Object obj) {
+    private List<SimpleFieldInfo> parseObject(Object obj) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         for (Class<?> cls = obj.getClass(); cls != Object.class; cls = cls.getSuperclass()) {
             Field[] fields = cls.getDeclaredFields();
@@ -199,8 +197,7 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param list
      * @return
      */
-    @Override
-    public List<SimpleFieldInfo> parseCollectionFieldInfo(Collection<?> list) {
+    private List<SimpleFieldInfo> parseCollectionFieldInfo(Collection<?> list) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         Optional.ofNullable(list).ifPresent(info -> {
             for (Object next : list) {
@@ -217,8 +214,7 @@ public class BaseFieldEquator extends AbstractEquator {
      * @param map
      * @return
      */
-    @Override
-    public List<SimpleFieldInfo> parseMapFieldInfo(Map map) {
+    private List<SimpleFieldInfo> parseMapFieldInfo(Map map) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
         Optional.ofNullable(map).ifPresent(info -> {
             map.forEach((k, v) -> {
