@@ -47,7 +47,6 @@
 
 ```
 https://github.com/JING-START/object-equator.git
-git clone https://github.com/JING-START/equator.git
 ```
 
 ### 文件目录说明
