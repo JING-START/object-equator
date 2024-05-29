@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -76,8 +77,22 @@ public class MainTest {
             System.out.println("new属性值: " + info.getSecondVal());
             System.out.println("====================================================");
         });
+        //输出
+        //属性名: shortExample
+        //属性中文名: Short中文名称1
+        //属性描述: Short属性描述
+        //old属性类型: class java.lang.Short
+        //old属性值: 123
+        //new属性值: 1234
+        //====================================================
+        //属性名: stringExample
+        //属性中文名: String中文名称3
+        //属性描述: String3属性描述
+        //old属性类型: class java.lang.String
+        //old属性值: ExampleEntityTwo two1 string three
+        //new属性值: ExampleEntityTwo two2 string three
+        //====================================================
     }
-
 
     /**
      * 对象集合属性基础比较
@@ -88,9 +103,13 @@ public class MainTest {
         example1.setStringExample("String属性值1");
         ExampleEntityOne example2 = new ExampleEntityOne();
         example2.setStringExample("String属性值2");
+        List<ExampleEntityOne> list1= new ArrayList<>();
+        list1.add(example1);
+        List<ExampleEntityOne> list2= new ArrayList<>();
+        list2.add(example2);
 
 
-        List<EquatorFieldInfo> differentFields = EquatorUtil.getDifferentFields(example1, example2);
+        List<EquatorFieldInfo> differentFields = EquatorUtil.getDifferentFields(list1, list2);
         differentFields.forEach(info -> {
             System.out.println("属性名: " + info.getFieldName());
             System.out.println("属性中文名: " + info.getFieldNote());
@@ -100,5 +119,14 @@ public class MainTest {
             System.out.println("new属性值: " + info.getSecondVal());
             System.out.println("====================================================");
         });
+        //输出
+        //属性名: stringExample
+        //属性中文名: String中文名称1
+        //属性描述: String属性描述
+        //old属性类型: class java.lang.String
+        //old属性值: String属性值1
+        //new属性值: String属性值2
+        //====================================================
     }
+
 }
