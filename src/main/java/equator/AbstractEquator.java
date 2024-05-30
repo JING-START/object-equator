@@ -4,6 +4,13 @@ package equator;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * <p>Description: 比较公共方法</p>
+ * <p>Copyright: Copyright (c) 2024</p>
+ *
+ * @author zjt
+ * &#064;date  2024/05/26/14:58
+ */
 public abstract class AbstractEquator implements Equator {
     private static final List<Class<?>> WRAPPER = Arrays.asList(Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class, Boolean.class, String.class);
 

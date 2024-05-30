@@ -5,9 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+
 /**
+ * <p>Description: 比较器接口</p>
+ * <p>Copyright: Copyright (c) 2024</p>
+ *
  * @author zjt
- * @date 2021/8/13 20:42
+ * &#064;date  2024/05/26/14:58
  */
 public interface Equator {
 

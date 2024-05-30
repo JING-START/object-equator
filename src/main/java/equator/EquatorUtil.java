@@ -4,6 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+
+/**
+ * <p>Description: 调用工具类</p>
+ * <p>Copyright: Copyright (c) 2024</p>
+ *
+ * @author zjt
+ * &#064;date  2024/05/26/14:58
+ */
 @Slf4j
 public class EquatorUtil {
 

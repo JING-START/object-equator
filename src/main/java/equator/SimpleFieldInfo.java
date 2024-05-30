@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 /**
+ * <p>Description: 解下比较对象返回的结果</p>
+ * <p>Copyright: Copyright (c) 2024</p>
+ *
  * @author zjt
- * @date 2021/8/13 20:43
+ * &#064;date  2024/05/26/14:58
  */
 @Data
 @NoArgsConstructor

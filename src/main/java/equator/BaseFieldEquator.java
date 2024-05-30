@@ -11,9 +11,11 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * 基础属性比较器
+ * <p>Description: 比较器具体实现</p>
+ * <p>Copyright: Copyright (c) 2024</p>
  *
- * @author 123先生
+ * @author zjt
+ * &#064;date  2024/05/26/14:58
  */
 @Slf4j
 public class BaseFieldEquator extends AbstractEquator {
@@ -93,8 +95,8 @@ public class BaseFieldEquator extends AbstractEquator {
     /**
      * 处理解析对象，获取需要比对的基础属性
      *
-     * @param obj
-     * @return
+     * @param obj 处理解析对象
+     * @return 返回封装集合属性
      */
     private List<SimpleFieldInfo> doHandler(Object obj) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
@@ -118,8 +120,8 @@ public class BaseFieldEquator extends AbstractEquator {
     /**
      * 解析集合对象
      *
-     * @param obj
-     * @return
+     * @param obj 解析对象
+     * @return 集合
      */
     private List<SimpleFieldInfo> parseObject(Object obj) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
@@ -194,8 +196,8 @@ public class BaseFieldEquator extends AbstractEquator {
     /**
      * 解析集合对象
      *
-     * @param list
-     * @return
+     * @param list 解析集合对象
+     * @return 集合
      */
     private List<SimpleFieldInfo> parseCollectionFieldInfo(Collection<?> list) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
@@ -211,8 +213,8 @@ public class BaseFieldEquator extends AbstractEquator {
     /**
      * 解析Map对象
      *
-     * @param map
-     * @return
+     * @param map 解析Map对象
+     * @return map
      */
     private List<SimpleFieldInfo> parseMapFieldInfo(Map map) {
         List<SimpleFieldInfo> infoList = new LinkedList<>();
