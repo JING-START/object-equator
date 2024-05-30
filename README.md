@@ -44,13 +44,22 @@
 
 ###### 安装步骤
 
-1. 复制[equator]目录即可使用
-
+1. 复制源码[equator]目录即可使用，可自定义修改代码
 ```
 https://github.com/JING-START/object-equator.git
 ```
+2. 从github上发布包releases下载jar包
+3. pom文件添加依赖
+```
+   <dependency>
+        <groupId>io.github.jing-start</groupId>
+        <artifactId>object-equator</artifactId>
+        <version>1.0-releases</version>
+   </dependency>
+```
 
 ### 文件目录说明
+1. test包下是测试用例MainTest，可以查看
 
 ```
 pom.xml
@@ -74,7 +83,7 @@ src
                     MainTest.java
 ```
 
-### 部署
+### 范例
 
 * 被比较对象需要添加注解如：
   ``@EqualsAnnotation(value = "Byte中文名称1", describe = "Byte属性描述")``
